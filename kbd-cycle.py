@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import math
+import argparse
+import sys
 
 def mix(frequency, phase, middle, width, length, pane_phase):
     red =  math.sin(frequency * length + 0 + pane_phase) * width + middle 
@@ -10,7 +12,16 @@ def mix(frequency, phase, middle, width, length, pane_phase):
 
 if __name__ == '__main__':
 
-    frequency = .025
+    example = 'Examples:\n\n'
+    example += '$ .{}'.format(sys.argv[0]) 
+
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, epilog=example)
+
+    sgroup = parser.add_argument_group("Main arguments")
+    sgroup.add_argument("-f", metavar="FREQUENCY", dest='freq', default=.025, help="Frequency of the sine wave. Default is .025, higher value repeats faster.")
+    args = parser.parse_args()
+
+    frequency = float(args.freq)
     amplitude = 127
     middle = 128
     counter = 0
@@ -28,6 +39,6 @@ if __name__ == '__main__':
         right = open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_right', 'w')
         right.write(right_mix)
         right.close()
+        counter+=1
         if counter > 255:
             counter = 0
-        counter+=1
