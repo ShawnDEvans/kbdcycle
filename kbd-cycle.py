@@ -13,7 +13,7 @@ def mix(frequency, phase, middle, width, length, pane_phase):
 if __name__ == '__main__':
 
     example = 'Examples:\n\n'
-    example += '$ .{}'.format(sys.argv[0]) 
+    example += '$ .{} -f .015'.format(sys.argv[0]) 
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, epilog=example)
 
