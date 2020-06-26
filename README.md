@@ -36,5 +36,5 @@ sudo systemctl start kbd-cycle.service
 6. Enjoy rainbow phased keyboard!
 7. Stop the new service (because this is a crazy thing to have all the time)
 ```
-sudo systemctl stop kbd-cycle.service
+$ sudo systemctl stop kbd-cycle.service
 ```
