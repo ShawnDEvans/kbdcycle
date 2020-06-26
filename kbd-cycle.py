@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     sgroup = parser.add_argument_group("Main arguments")
     sgroup.add_argument("-f", metavar="FREQUENCY", dest='freq', default=.2, help='Frequency of the sine wave. Default is .2, higher value repeats faster.')
-    sgroup.add_argument("--delay", metavar="SLEEP0", dest='delay', default=.2, help='Take a breather between file writes. Really helps performance. Default .2s')
+    sgroup.add_argument("--delay", metavar="SLEEP", dest='delay', default=.2, help='Take a breather between file writes. Really helps performance. Default .2s')
     args = parser.parse_args()
 
     frequency = float(args.freq)
