@@ -33,7 +33,7 @@ if __name__ == '__main__':
     for rgb in range(0,254):
         left_mix = mix(frequency, 2, middle, amplitude, rgb) 
         center_mix = mix(frequency, 2.5, middle, amplitude, rgb)
-        right_mix = mix(frequency, 3, middle, amplitude, rgb)
+        right_mix = mix(frequency, 3.5, middle, amplitude, rgb)
         phase_array.append([left_mix, center_mix, right_mix])
         
     while True:
