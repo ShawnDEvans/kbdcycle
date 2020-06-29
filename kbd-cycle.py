@@ -21,19 +21,21 @@ if __name__ == '__main__':
     sgroup = parser.add_argument_group("Main arguments")
     sgroup.add_argument("-f", metavar="FREQUENCY", dest='freq', default=.2, help='Frequency of the sine wave. Default is .2, higher value repeats faster.')
     sgroup.add_argument("--delay", metavar="SLEEP", dest='delay', default=.2, help='Take a breather between file writes. Really helps performance. Default .2s')
+    sgroup.add_argument("--left", metavar="PHASE", dest='left_phase', default=1, help='Phase shift of left pane, default 1')
+    sgroup.add_argument("--center", metavar="PHASE", dest='center_phase', default=2, help='Phase shift of center pane, default 2')
+    sgroup.add_argument("--right", metavar="PHASE", dest='right_phase', default=3, help='Phase shift of right pane, default 3')
     args = parser.parse_args()
 
     frequency = float(args.freq)
     amplitude = 127
     middle = 128
-    counter = 0
     
     phase_array = []
 
-    for rgb in range(0,254):
-        left_mix = mix(frequency, 2, middle, amplitude, rgb) 
-        center_mix = mix(frequency, 2.5, middle, amplitude, rgb)
-        right_mix = mix(frequency, 3.5, middle, amplitude, rgb)
+    for rgb in range(1,255):
+        left_mix = mix(frequency, args.left_phase, middle, amplitude, rgb) 
+        center_mix = mix(frequency, args.center_phase,middle, amplitude, rgb)
+        right_mix = mix(frequency, args.right_phase, middle, amplitude, rgb)
         phase_array.append([left_mix, center_mix, right_mix])
         
     while True:
@@ -50,5 +52,4 @@ if __name__ == '__main__':
             right = open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_right', 'w')
             right.write(right_pane)
             right.close()
-            counter+=1
             time.sleep(float(args.delay))
