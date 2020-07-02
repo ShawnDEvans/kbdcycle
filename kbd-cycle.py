@@ -24,6 +24,7 @@ if __name__ == '__main__':
     sgroup.add_argument("--left", metavar="PHASE", dest='left_phase', default=1, help='Phase shift of left pane, default 1')
     sgroup.add_argument("--center", metavar="PHASE", dest='center_phase', default=2, help='Phase shift of center pane, default 2')
     sgroup.add_argument("--right", metavar="PHASE", dest='right_phase', default=3, help='Phase shift of right pane, default 3')
+    sgroup.add_argument("--darter", dest='darter', default=False, action='store_true', help='Engages Darter pro mode, which has a single color pane')
     args = parser.parse_args()
 
     frequency = float(args.freq)
@@ -33,23 +34,41 @@ if __name__ == '__main__':
     phase_array = []
 
     for rgb in range(1,255):
-        left_mix = mix(frequency, args.left_phase, middle, amplitude, rgb) 
-        center_mix = mix(frequency, args.center_phase,middle, amplitude, rgb)
-        right_mix = mix(frequency, args.right_phase, middle, amplitude, rgb)
-        phase_array.append([left_mix, center_mix, right_mix])
+        if args.darter:
+            darter_mix = mix(frequency, 1, middle, amplitude, rgb)
+            phase_array.append([darter_mix])
+        else:
+            left_mix = mix(frequency, args.left_phase, middle, amplitude, rgb) 
+            center_mix = mix(frequency, args.center_phase,middle, amplitude, rgb)
+            right_mix = mix(frequency, args.right_phase, middle, amplitude, rgb)
+            phase_array.append([left_mix, center_mix, right_mix])
         
     while True:
-        for phase in phase_array:
-            left_pane = phase[0]
-            center_pane = phase[1]
-            right_pane = phase[2]
-            left = open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_left', 'w')
-            left.write(left_pane)
-            left.close()
-            center =  open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_center', 'w')
-            center.write(center_pane)
-            center.close()
-            right = open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_right', 'w')
-            right.write(right_pane)
-            right.close()
-            time.sleep(float(args.delay))
+        try:
+            if args.darter:
+                for phase in phase_array:
+                    pane = phase[0]
+                    darter_pane = open('/sys/class/leds/system76_acpi::kbd_backlight/color', 'w')
+                    darter_pane.write(pane)
+                    darter_pane.close()
+                    time.sleep(float(args.delay))
+            else:
+                for phase in phase_array:
+                    left_pane = phase[0]
+                    center_pane = phase[1]
+                    right_pane = phase[2]
+                    left = open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_left', 'w')
+                    left.write(left_pane)
+                    left.close()
+                    center =  open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_center', 'w')
+                    center.write(center_pane)
+                    center.close()
+                    right = open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_right', 'w')
+                    right.write(right_pane)
+                    right.close()
+                    time.sleep(float(args.delay))
+        except FileNotFoundError as e:
+            print('[!] Looks like your system doesn\'t have the file: ', e.filename)
+            print('[!] Default is set for Oryx Pro, try --darter if you\'re using a Darter')
+            print('[!] If you have a different model with color KB, log an issue: https://github.com/ShawnDEvans/kbdcycle')
+            sys.exit()
