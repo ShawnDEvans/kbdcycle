@@ -5,6 +5,9 @@ import argparse
 import sys
 import time
 
+DARTER = '/sys/class/leds/system76_acpi::kbd_backlight'
+ORYX = '/sys/devices/platform/system76/leds/system76::kbd_backlight'
+
 def mix(frequency, phase, middle, width, length):
     red =  math.sin(frequency * length + 0) * width + middle 
     green =  math.sin(frequency * length + (phase)) * width + middle 
@@ -32,6 +35,10 @@ if __name__ == '__main__':
     middle = 128
     
     phase_array = []
+    
+    path = ORYX
+    if args.darter:
+        path = DARTER
 
     for rgb in range(1,255):
         if args.darter:
@@ -48,7 +55,7 @@ if __name__ == '__main__':
             if args.darter:
                 for phase in phase_array:
                     pane = phase[0]
-                    darter_pane = open('/sys/class/leds/system76_acpi::kbd_backlight/color', 'w')
+                    darter_pane = open('{}/color'.format(path), 'w')
                     darter_pane.write(pane)
                     darter_pane.close()
                     time.sleep(float(args.delay))
@@ -57,13 +64,13 @@ if __name__ == '__main__':
                     left_pane = phase[0]
                     center_pane = phase[1]
                     right_pane = phase[2]
-                    left = open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_left', 'w')
+                    left = open('{}/color_left'.format(path), 'w')
                     left.write(left_pane)
                     left.close()
-                    center =  open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_center', 'w')
+                    center =  open('{}/color_center'.format(path), 'w')
                     center.write(center_pane)
                     center.close()
-                    right = open('/sys/devices/platform/system76/leds/system76::kbd_backlight/color_right', 'w')
+                    right = open('{}/color_right'.format(path), 'w')
                     right.write(right_pane)
                     right.close()
                     time.sleep(float(args.delay))
