@@ -10,7 +10,6 @@ Sometimes you get bored and want to mess with sine functions in Python. This sim
 ```
 [Unit]
 Description=Keyboard Rainbow
-After=multi-user.target
 
 [Service]
 Type=simple
